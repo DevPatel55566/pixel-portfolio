@@ -1,27 +1,28 @@
 
 import React from 'react';
-import { Github, Instagram, Mail } from 'lucide-react';
 
 const PixelFooter: React.FC = () => {
   return (
-    <footer className="bg-pixel-secondary text-pixel-white py-8 border-t-4 border-pixel-primary">
-      <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-        <div className="font-pixel text-xs mb-2 text-pixel-accent">
-          &copy; 2025 Dev Patel. All Rights Reserved.
+    <footer className="bg-pixel-primary text-white py-8 border-t-4 border-pixel-accent">
+      <div className="max-w-6xl mx-auto px-4 text-center">
+        <p className="font-pixel text-sm mb-2">
+          <span className="text-pixel-highlight">DEV PATEL</span> • 
+          <span className="text-pixel-accent"> PORTFOLIO</span>
+        </p>
+        <p className="font-game text-gray-400 text-sm">
+          Built with React, TypeScript, Tailwind CSS and pixel art love
+        </p>
+        
+        <div className="mt-6 flex justify-center items-center">
+          <div className="pixel-button bg-transparent border-pixel-accent text-pixel-accent py-1 px-3 text-xs">
+            © 2023 • All Rights Reserved
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <a href="https://github.com" className="text-pixel-white hover:text-pixel-primary transition-colors" aria-label="GitHub">
-            <Github size={22} />
+        
+        <div className="mt-4 font-pixel text-xs">
+          <a href="#home" className="text-gray-400 hover:text-pixel-highlight">
+            [BACK TO TOP]
           </a>
-          <a href="https://instagram.com/dv_patel555" className="text-pixel-white hover:text-pixel-highlight transition-colors" aria-label="Instagram">
-            <Instagram size={22} />
-          </a>
-          <a href="mailto:contact@example.com" className="text-pixel-white hover:text-pixel-accent transition-colors" aria-label="Mail">
-            <Mail size={22} />
-          </a>
-        </div>
-        <div className="font-pixel text-xs">
-          <a href="#home" className="text-gray-300 hover:text-pixel-highlight">Back to top</a>
         </div>
       </div>
     </footer>
