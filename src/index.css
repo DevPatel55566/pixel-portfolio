@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -97,5 +99,134 @@
 
   body {
     @apply bg-background text-foreground;
+    image-rendering: pixelated;
+  }
+}
+
+@layer components {
+  .pixel-border {
+    @apply border-2 border-black relative;
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+  }
+  
+  .pixel-button {
+    @apply font-pixel bg-pixel-accent text-white px-4 py-2 border-2 border-black relative;
+    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.8);
+    transition: all 0.1s ease;
+  }
+  
+  .pixel-button:hover {
+    @apply bg-pixel-highlight;
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+  }
+  
+  .pixel-button:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px 0 rgba(0, 0, 0, 0.8);
+  }
+  
+  .pixel-card {
+    @apply bg-white p-4 border-2 border-black;
+    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+  }
+  
+  .game-container {
+    @apply max-w-6xl mx-auto px-4 py-8;
+  }
+  
+  .pixelated {
+    image-rendering: pixelated;
+  }
+  
+  .pixel-progress-bar {
+    @apply w-full h-6 bg-gray-200 border-2 border-black;
+  }
+  
+  .pixel-progress-fill {
+    @apply h-full bg-pixel-accent;
+  }
+  
+  @keyframes pixel-float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  .pixel-float {
+    animation: pixel-float 3s ease-in-out infinite;
+  }
+  
+  .bg-grid {
+    background-image: 
+      linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+    background-size: 16px 16px;
+  }
+  
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  
+  .blink {
+    animation: blink 1s step-end infinite;
+  }
+  
+  /* Pixelated text animation */
+  @keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+  }
+  
+  .typing-container h1, 
+  .typing-container h2 {
+    overflow: hidden;
+    white-space: nowrap;
+    animation: 
+      typing 3.5s steps(40, end),
+      blink-caret .75s step-end 8;
+  }
+  
+  /* Pixelated separator */
+  .pixel-separator {
+    height: 8px;
+    background: repeating-linear-gradient(
+      to right,
+      transparent,
+      transparent 4px,
+      currentColor 4px,
+      currentColor 8px
+    );
+  }
+  
+  /* Adds pixel art feel to images */
+  .pixel-image {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+  
+  /* Retro scanlines effect */
+  .scanlines {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .scanlines::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+      to bottom,
+      transparent 50%,
+      rgba(0, 0, 0, 0.1) 51%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: 1;
   }
 }

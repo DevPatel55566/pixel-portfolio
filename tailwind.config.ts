@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -18,7 +19,21 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'pixel': ['"Press Start 2P"', 'cursive'],
+				'game': ['"VT323"', 'monospace'],
+			},
 			colors: {
+				'pixel': {
+					'primary': '#0d253f',
+					'secondary': '#1d3b5a',
+					'accent': '#8b5cf6',
+					'highlight': '#ff6b6b',
+					'success': '#4ade80',
+					'info': '#60a5fa',
+					'warning': '#fbbf24',
+					'danger': '#f87171',
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -84,11 +99,17 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pixel-float': {
+					'0%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-10px)' },
+					'100%': { transform: 'translateY(0px)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pixel-float': 'pixel-float 3s ease-in-out infinite'
 			}
 		}
 	},
