@@ -98,72 +98,43 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-pixel-white text-pixel-black;
     image-rendering: pixelated;
+    letter-spacing: 0.02em;
   }
 }
 
 @layer components {
   .pixel-border {
-    @apply border-2 border-black relative;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+    @apply border-2 border-pixel-black relative;
+    box-shadow: 3px 3px 0 #1E90FF33;
   }
-  
   .pixel-button {
-    @apply font-pixel bg-pixel-accent text-white px-4 py-2 border-2 border-black relative;
-    box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.8);
-    transition: all 0.1s ease;
+    @apply font-pixel bg-pixel-accent text-pixel-black px-4 py-2 border-2 border-pixel-black relative;
+    box-shadow: 2px 2px 0 #32CD3240;
+    transition: all 0.1s;
   }
-  
   .pixel-button:hover {
-    @apply bg-pixel-highlight;
+    @apply bg-pixel-highlight text-white;
     transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.8);
+    box-shadow: 1px 1px 0 #FF313150;
   }
-  
-  .pixel-button:active {
-    transform: translate(3px, 3px);
-    box-shadow: 0px 0px 0 rgba(0, 0, 0, 0.8);
-  }
-  
   .pixel-card {
-    @apply bg-white p-4 border-2 border-black;
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+    @apply bg-pixel-white p-4 border-2 border-pixel-black rounded-md;
+    box-shadow: 2px 2px 0 #0000001a;
   }
-  
   .game-container {
     @apply max-w-6xl mx-auto px-4 py-8;
   }
-  
   .pixelated {
     image-rendering: pixelated;
   }
-  
-  .pixel-progress-bar {
-    @apply w-full h-6 bg-gray-200 border-2 border-black;
-  }
-  
-  .pixel-progress-fill {
-    @apply h-full bg-pixel-accent;
-  }
-  
-  @keyframes pixel-float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
-  }
-  
-  .pixel-float {
-    animation: pixel-float 3s ease-in-out infinite;
-  }
-  
   .bg-grid {
     background-image: 
-      linear-gradient(to right, rgba(0, 0, 0, 0.1) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
+      linear-gradient(to right, #e3e3e3 1px, transparent 1px),
+      linear-gradient(to bottom, #e3e3e3 1px, transparent 1px);
     background-size: 16px 16px;
   }
-  
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
