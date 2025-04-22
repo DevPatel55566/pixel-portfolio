@@ -32,7 +32,8 @@ export default {
           'black': '#040404',
         },
         background: '#fff',
-        foreground: '#040404'
+        foreground: '#040404',
+        border: 'hsl(var(--border) / <alpha-value>)',
       },
       borderRadius: {
         lg: 'var(--radius)',
