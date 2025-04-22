@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -25,8 +26,8 @@ export default {
       colors: {
         'pixel': {
           'primary': '#1E90FF',     // Bright Blue
-          'secondary': '#10151A',   // Deep Black-Blue
-          'accent': '#32CD32',      // Vivid Green
+          'secondary': '#000000',   // Black
+          'accent': '#4CAF50',      // Green
           'highlight': '#FF3131',   // Red
           'white': '#FFFFFF',
           'black': '#040404',
