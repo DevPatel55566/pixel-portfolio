@@ -25,10 +25,10 @@ export default {
 			},
 			colors: {
 				'pixel': {
-					'primary': '#0d253f',
-					'secondary': '#1d3b5a',
-					'accent': '#8b5cf6',
-					'highlight': '#ff6b6b',
+					'primary': '#1E90FF', // Changed to blue
+					'secondary': '#0A3D62', // Darker blue
+					'accent': '#32CD32', // Changed to green
+					'highlight': '#FF3131', // Changed to red
 					'success': '#4ade80',
 					'info': '#60a5fa',
 					'warning': '#fbbf24',

@@ -8,6 +8,7 @@ import PixelProjects from '@/components/PixelProjects';
 import PixelContact from '@/components/PixelContact';
 import PixelFooter from '@/components/PixelFooter';
 import ScanlineEffect from '@/components/ScanlineEffect';
+import MusicPlayer from '@/components/MusicPlayer';
 
 const Index: React.FC = () => {
   // Optional: Add pixel cursor effect
@@ -38,7 +39,7 @@ const Index: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-black overflow-x-hidden">
       {/* Custom pixel cursor */}
       <div 
         id="custom-cursor" 
@@ -53,6 +54,9 @@ const Index: React.FC = () => {
       <PixelProjects />
       <PixelContact />
       <PixelFooter />
+      
+      {/* Music player */}
+      <MusicPlayer />
       
       {/* Game-style background grid */}
       <div className="fixed inset-0 bg-grid opacity-5 pointer-events-none z-0"></div>
