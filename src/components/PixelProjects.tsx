@@ -1,5 +1,6 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface Project {
   title: string;
@@ -10,6 +11,8 @@ interface Project {
 }
 
 const PixelProjects: React.FC = () => {
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  
   const projects: Project[] = [
     {
       title: 'Signed & Trapped – AI Legal Assistant',
@@ -42,36 +45,37 @@ const PixelProjects: React.FC = () => {
   ];
 
   return (
-    <section id="projects" className="py-20 bg-pixel-primary text-white">
+    <section id="projects" className="py-10 bg-pixel-primary text-white">
       <div className="game-container">
-        <div className="text-center mb-12">
-          <h2 className="font-pixel text-3xl mb-2">LEVELS COMPLETED</h2>
+        <div className="text-center mb-6">
+          <h2 className="font-pixel text-3xl mb-1">LEVELS COMPLETED</h2>
           <div className="w-20 h-1 bg-pixel-highlight mx-auto"></div>
-          <p className="font-game text-lg mt-4 text-gray-300">Select a project to view details</p>
+          <p className="font-game text-lg mt-2 text-gray-300">Select a project to view details</p>
         </div>
         
-        <div className="grid gap-12">
+        <div className="grid gap-4">
           {projects.map((project, index) => (
             <div key={project.title} className="relative">
-              {/* Level number */}
-              <div className="absolute -left-4 md:-left-8 top-0 w-12 h-12 bg-pixel-accent font-pixel flex items-center justify-center border-2 border-black">
+              <div className="absolute -left-4 md:-left-8 top-0 w-10 h-10 bg-pixel-accent font-pixel flex items-center justify-center border-2 border-black">
                 {project.level}
               </div>
               
-              {/* Project card */}
-              <div className="ml-8 md:ml-10 pixel-card bg-pixel-secondary p-6">
-                <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
-                  <div className="text-5xl">{project.icon}</div>
-                  <h3 className="font-pixel text-xl text-pixel-highlight">{project.title}</h3>
+              <div 
+                className="ml-6 md:ml-8 pixel-card bg-pixel-secondary p-4 cursor-pointer hover:bg-pixel-secondary/80 transition-colors"
+                onClick={() => setSelectedProject(project)}
+              >
+                <div className="flex flex-col md:flex-row md:items-center gap-2 mb-2">
+                  <div className="text-4xl">{project.icon}</div>
+                  <h3 className="font-pixel text-lg text-pixel-highlight">{project.title}</h3>
                 </div>
                 
-                <p className="font-game text-lg mb-4">{project.description}</p>
+                <p className="font-game text-base mb-2 line-clamp-2">{project.description}</p>
                 
-                <div className="flex flex-wrap gap-2 mt-4">
+                <div className="flex flex-wrap gap-1">
                   {project.technologies.map((tech) => (
                     <span 
                       key={tech} 
-                      className="inline-block px-3 py-1 bg-black/30 border border-pixel-highlight text-pixel-highlight font-game"
+                      className="inline-block px-2 py-0.5 bg-black/30 border border-pixel-highlight text-pixel-highlight text-sm font-game"
                     >
                       {tech}
                     </span>
@@ -79,20 +83,50 @@ const PixelProjects: React.FC = () => {
                 </div>
               </div>
               
-              {/* Connecting line to next project */}
               {index < projects.length - 1 && (
-                <div className="absolute left-4 md:left-6 top-full h-12 w-0.5 bg-pixel-highlight dashed-line"></div>
+                <div className="absolute left-4 md:left-6 top-full h-4 w-0.5 bg-pixel-highlight dashed-line"></div>
               )}
             </div>
           ))}
         </div>
         
-        <div className="text-center mt-12">
+        <div className="text-center mt-8">
           <a href="#contact" className="inline-block pixel-button">
             FINAL LEVEL: CONTACT
           </a>
         </div>
       </div>
+
+      <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
+        {selectedProject && (
+          <DialogContent className="bg-pixel-primary border-pixel-accent text-white max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="font-pixel text-2xl flex items-center gap-4">
+                <span className="text-4xl">{selectedProject.icon}</span>
+                <span className="text-pixel-highlight">{selectedProject.title}</span>
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="mt-4">
+              <p className="font-game text-lg mb-6">{selectedProject.description}</p>
+              
+              <div className="space-y-4">
+                <h4 className="font-pixel text-sm text-pixel-accent">TECHNOLOGIES USED:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProject.technologies.map((tech) => (
+                    <span 
+                      key={tech} 
+                      className="px-3 py-1 bg-black/30 border border-pixel-highlight text-pixel-highlight font-game"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
     </section>
   );
 };
