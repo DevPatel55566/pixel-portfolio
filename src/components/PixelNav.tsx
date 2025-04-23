@@ -1,49 +1,45 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 
 const PixelNav: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-pixel-primary text-white p-4 sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto flex justify-between items-center">
-        <div className="font-pixel text-lg tracking-wider">
-          <span className="text-pixel-accent">&lt;</span>
+    <nav className="bg-[#1e2b7a] text-white p-4 sticky top-0 z-50 border-b border-blue-400/20">
+      <div className="container flex justify-between items-center">
+        <div className="text-lg tracking-wider">
+          <span className="text-blue-400">&lt;</span>
           Dev
-          <span className="text-pixel-highlight">Patel</span>
-          <span className="text-pixel-accent">/&gt;</span>
+          <span className="text-blue-200">Patel</span>
+          <span className="text-blue-400">/&gt;</span>
         </div>
         
-        {/* Mobile menu button */}
         <button 
-          className="md:hidden px-2 py-1 border border-pixel-accent text-pixel-accent" 
+          className="md:hidden px-3 py-2 border border-blue-400/30 text-blue-200 hover:bg-[#2a367d] rounded transition-colors" 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
           Menu
         </button>
         
-        {/* Desktop Navigation */}
         <div className="hidden md:flex space-x-8">
           {['Home', 'About', 'Skills', 'Projects', 'Contact'].map((item) => (
             <a 
               key={item} 
               href={`#${item.toLowerCase()}`}
-              className="text-lg hover:text-pixel-accent transition-colors"
+              className="text-blue-200 hover:text-white transition-colors"
             >
               {item}
             </a>
           ))}
         </div>
         
-        {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="absolute top-full left-0 w-full bg-pixel-primary border-t border-pixel-accent md:hidden">
+          <div className="absolute top-full left-0 w-full bg-[#1e2b7a] border-t border-blue-400/20 md:hidden">
             {['Home', 'About', 'Skills', 'Projects', 'Contact'].map((item) => (
               <a 
                 key={item} 
                 href={`#${item.toLowerCase()}`}
-                className="block py-3 px-4 text-lg hover:bg-pixel-secondary border-b border-gray-700"
+                className="block py-3 px-4 text-blue-200 hover:bg-[#2a367d] border-b border-blue-400/10"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item}

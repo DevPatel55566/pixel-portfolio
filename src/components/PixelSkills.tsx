@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 interface Skill {
@@ -9,7 +8,6 @@ interface Skill {
 }
 
 const PixelSkills: React.FC = () => {
-  // Skills categories as game inventory
   const [activeCategory, setActiveCategory] = useState<'languages' | 'web' | 'database' | 'devops'>('languages');
   
   const skills: Record<string, Skill[]> = {
@@ -58,20 +56,22 @@ const PixelSkills: React.FC = () => {
   };
 
   return (
-    <section id="skills" className="py-20 bg-gray-100">
-      <div className="game-container">
+    <section id="skills" className="py-20 bg-[#1e2b7a] text-white">
+      <div className="container">
         <div className="text-center mb-12">
-          <h2 className="font-pixel text-3xl mb-2 text-pixel-primary">SKILL TREE</h2>
-          <div className="w-20 h-1 bg-pixel-accent mx-auto"></div>
-          <p className="font-game text-lg mt-4 text-gray-600">Select a category to view skills</p>
+          <h2 className="text-4xl font-bold mb-2">Skill Tree</h2>
+          <div className="w-24 h-1 bg-blue-400 mx-auto"></div>
         </div>
         
-        {/* Category Selector (Inventory Tabs) */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
+        <div className="flex flex-wrap justify-center gap-3 mb-10">
           {Object.keys(skills).map((category) => (
             <button
               key={category}
-              className={`pixel-button ${activeCategory === category ? 'bg-pixel-highlight' : 'bg-pixel-primary'}`}
+              className={`px-4 py-2 rounded transition-colors ${
+                activeCategory === category 
+                ? 'bg-blue-400 text-white' 
+                : 'bg-[#2a367d] text-blue-200 hover:bg-[#2e3d8d]'
+              }`}
               onClick={() => setActiveCategory(category as any)}
             >
               {category.toUpperCase()}
@@ -79,30 +79,23 @@ const PixelSkills: React.FC = () => {
           ))}
         </div>
         
-        {/* Skills Display (Inventory Items) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skills[activeCategory].map((skill) => (
-            <div key={skill.name} className="pixel-card bg-white">
-              <div className="flex items-center mb-2">
-                <span className="text-2xl mr-2">{skill.icon}</span>
-                <h3 className="font-game text-xl">{skill.name}</h3>
+            <div key={skill.name} className="bg-[#2a367d] p-4 rounded-lg transition-transform hover:translate-y-[-4px]">
+              <div className="flex items-center gap-3 mb-3">
+                <span className="text-2xl">{skill.icon}</span>
+                <h3 className="text-xl text-blue-200">{skill.name}</h3>
               </div>
               
-              <div className="pixel-progress-bar">
+              <div className="h-2 bg-[#1e2b7a] rounded-full overflow-hidden">
                 <div 
-                  className="pixel-progress-fill"
+                  className="h-full bg-blue-400 transition-all duration-500"
                   style={{ width: `${skill.level}%` }}
-                ></div>
+                />
               </div>
-              <div className="text-right mt-1 font-pixel text-xs">LVL {skill.level}</div>
+              <div className="text-right mt-1 text-sm text-blue-300">LVL {skill.level}</div>
             </div>
           ))}
-        </div>
-        
-        <div className="text-center mt-12">
-          <a href="#projects" className="inline-block pixel-button">
-            NEXT LEVEL: PROJECTS
-          </a>
         </div>
       </div>
     </section>
