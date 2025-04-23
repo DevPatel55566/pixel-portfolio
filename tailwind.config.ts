@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -27,7 +26,7 @@ export default {
 				'pixel': {
 					'primary': '#0d253f',
 					'secondary': '#1d3b5a',
-					'accent': '#8b5cf6',
+					'accent': '#60a5fa',
 					'highlight': '#ff6b6b',
 					'success': '#4ade80',
 					'info': '#60a5fa',

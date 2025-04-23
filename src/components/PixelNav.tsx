@@ -17,10 +17,10 @@ const PixelNav: React.FC = () => {
         
         {/* Mobile menu button */}
         <button 
-          className="md:hidden pixel-button py-1 px-2" 
+          className="md:hidden px-2 py-1 border border-pixel-accent text-pixel-accent" 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          MENU
+          Menu
         </button>
         
         {/* Desktop Navigation */}
@@ -29,7 +29,7 @@ const PixelNav: React.FC = () => {
             <a 
               key={item} 
               href={`#${item.toLowerCase()}`}
-              className="font-game text-lg hover:text-pixel-highlight transition-colors"
+              className="text-lg hover:text-pixel-accent transition-colors"
             >
               {item}
             </a>
@@ -38,12 +38,12 @@ const PixelNav: React.FC = () => {
         
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="absolute top-full left-0 w-full bg-pixel-primary border-t-2 border-black md:hidden">
+          <div className="absolute top-full left-0 w-full bg-pixel-primary border-t border-pixel-accent md:hidden">
             {['Home', 'About', 'Skills', 'Projects', 'Contact'].map((item) => (
               <a 
                 key={item} 
                 href={`#${item.toLowerCase()}`}
-                className="block py-3 px-4 font-game text-lg hover:bg-pixel-secondary border-b border-gray-700"
+                className="block py-3 px-4 text-lg hover:bg-pixel-secondary border-b border-gray-700"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item}
