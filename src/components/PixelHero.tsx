@@ -1,11 +1,11 @@
-
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 
 const PixelHero: React.FC = () => {
   return (
-    <section id="home" className="min-h-screen bg-[#1e2b7a] flex items-center relative overflow-hidden">
-      <div className="container mx-auto px-4 py-20">
+    <section id="home" className="min-h-screen bg-gradient-to-br from-[#0a1128] via-[#1e3a8a] to-[#283593] flex items-center relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/lovable-uploads/816eab2a-dee0-4043-84d3-c2afad314f02.png')] opacity-50 bg-cover bg-center mix-blend-overlay"></div>
+      <div className="container mx-auto px-4 py-20 relative z-10">
         <div className="max-w-4xl">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
             Software Developer & <br />
@@ -35,7 +35,7 @@ const PixelHero: React.FC = () => {
         </div>
       </div>
       
-      <div className="absolute inset-0 bg-grid opacity-5 pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-full h-64 bg-gradient-to-t from-[#0a1128] to-transparent"></div>
     </section>
   );
 };

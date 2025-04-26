@@ -56,21 +56,22 @@ const PixelSkills: React.FC = () => {
   };
 
   return (
-    <section id="skills" className="py-20 bg-[#1e2b7a] text-white">
-      <div className="container">
+    <section id="skills" className="py-32 bg-gradient-to-br from-[#0a1128] via-[#1e3a8a] to-[#283593] relative">
+      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-300 via-transparent to-transparent"></div>
+      <div className="container relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold mb-2">Skill Tree</h2>
-          <div className="w-24 h-1 bg-blue-400 mx-auto"></div>
+          <h2 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-200 via-blue-100 to-blue-200 bg-clip-text text-transparent">Skill Tree</h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-blue-600 mx-auto rounded-full"></div>
         </div>
         
         <div className="flex flex-wrap justify-center gap-3 mb-10">
           {Object.keys(skills).map((category) => (
             <button
               key={category}
-              className={`px-4 py-2 rounded transition-colors ${
+              className={`px-4 py-2 rounded-lg backdrop-blur-xl transition-colors ${
                 activeCategory === category 
-                ? 'bg-blue-400 text-white' 
-                : 'bg-[#2a367d] text-blue-200 hover:bg-[#2e3d8d]'
+                ? 'bg-white/20 text-white border border-white/20' 
+                : 'bg-white/5 text-blue-200 border border-white/10 hover:bg-white/10'
               }`}
               onClick={() => setActiveCategory(category as any)}
             >
@@ -81,7 +82,7 @@ const PixelSkills: React.FC = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {skills[activeCategory].map((skill) => (
-            <div key={skill.name} className="bg-[#2a367d] p-4 rounded-lg transition-transform hover:translate-y-[-4px]">
+            <div key={skill.name} className="backdrop-blur-xl bg-white/5 p-6 rounded-xl transition-transform hover:translate-y-[-4px] border border-white/10">
               <div className="flex items-center gap-3 mb-3">
                 <span className="text-2xl">{skill.icon}</span>
                 <h3 className="text-xl text-blue-200">{skill.name}</h3>

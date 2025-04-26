@@ -4,10 +4,11 @@ import { Mail, Linkedin, Instagram } from 'lucide-react';
 
 const PixelContact: React.FC = () => {
   return (
-    <section id="contact" className="py-32 bg-gradient-to-br from-[#0f172a] via-[#1e3a8a] to-[#0f172a]">
-      <div className="container mx-auto px-4">
+    <section id="contact" className="py-32 bg-gradient-to-br from-[#0a1128] via-[#1e3a8a] to-[#283593] relative">
+      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-300 via-transparent to-transparent"></div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center bg-gradient-to-r from-blue-200 to-cyan-200 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center bg-gradient-to-r from-blue-200 via-blue-100 to-blue-200 bg-clip-text text-transparent">
             Get in Touch
           </h2>
           
@@ -49,26 +50,26 @@ const PixelContact: React.FC = () => {
                 <input
                   type="text"
                   placeholder="Your Name"
-                  className="w-full p-4 bg-gradient-to-br from-[#0f172a]/80 to-[#1e3a8a]/80 border border-blue-400/20 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-blue-200/50"
+                  className="w-full p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-white/50"
                 />
               </div>
               <div>
                 <input
                   type="email"
                   placeholder="Your Email"
-                  className="w-full p-4 bg-gradient-to-br from-[#0f172a]/80 to-[#1e3a8a]/80 border border-blue-400/20 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-blue-200/50"
+                  className="w-full p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-white/50"
                 />
               </div>
               <div>
                 <textarea
                   placeholder="Your Message"
                   rows={4}
-                  className="w-full p-4 bg-gradient-to-br from-[#0f172a]/80 to-[#1e3a8a]/80 border border-blue-400/20 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-blue-200/50"
+                  className="w-full p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-white/50"
                 ></textarea>
               </div>
               <button 
                 type="submit"
-                className="w-full bg-gradient-to-r from-[#3a7bd5] to-[#3a6073] text-white py-4 px-8 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20"
+                className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-8 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 backdrop-blur-xl"
               >
                 Send Message
               </button>
