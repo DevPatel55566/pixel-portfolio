@@ -1,9 +1,10 @@
+
 import React from 'react';
 
 const PixelFooter: React.FC = () => {
   return (
-    <footer className="py-20 bg-gradient-to-br from-[#0a1128] to-[#1e3a8a] relative border-t border-white/10">
-      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-300 via-transparent to-transparent"></div>
+    <footer className="relative py-12 bg-[#0a1128] border-t border-white/10">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-300/5 via-transparent to-transparent"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto text-center">
           <div className="mb-8">

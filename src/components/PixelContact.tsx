@@ -4,8 +4,8 @@ import { Mail, Linkedin, Instagram } from 'lucide-react';
 
 const PixelContact: React.FC = () => {
   return (
-    <section id="contact" className="py-32 bg-gradient-to-br from-[#0a1128] via-[#1e3a8a] to-[#283593] relative">
-      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-300 via-transparent to-transparent"></div>
+    <section id="contact" className="relative py-20 bg-gradient-to-b from-[#1e3a8a] to-[#0a1128]">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-300/10 via-transparent to-transparent"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center bg-gradient-to-r from-blue-200 via-blue-100 to-blue-200 bg-clip-text text-transparent">

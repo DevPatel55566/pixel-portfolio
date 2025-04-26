@@ -50,8 +50,8 @@ const PixelProjects: React.FC = () => {
   ];
 
   return (
-    <section id="projects" className="py-32 bg-gradient-to-br from-[#0a1128] via-[#1e3a8a] to-[#283593] relative overflow-hidden">
-      <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-300 via-transparent to-transparent"></div>
+    <section id="projects" className="relative py-20 bg-gradient-to-b from-[#283593] to-[#1e3a8a]">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-300/10 via-transparent to-transparent"></div>
       <div className="container px-4 mx-auto relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-200 via-blue-100 to-blue-200 bg-clip-text text-transparent">
