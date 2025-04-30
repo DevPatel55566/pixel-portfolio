@@ -44,7 +44,9 @@ const Index: React.FC = () => {
         id="custom-cursor" 
         className="fixed w-4 h-4 bg-pixel-accent z-50 pointer-events-none opacity-0 pixelated"
         style={{ transform: 'translate(-50%, -50%)' }}
-      ></div>
+      >
+        
+      </div>
       
       <PixelNav />
       <PixelHero />
