@@ -1,13 +1,12 @@
-
 import React, { useEffect } from 'react';
 import PixelNav from '@/components/PixelNav';
 import PixelHero from '@/components/PixelHero';
 import PixelAbout from '@/components/PixelAbout';
 import PixelSkills from '@/components/PixelSkills';
-import PixelProjects from '@/components/PixelProjects';
 import PixelContact from '@/components/PixelContact';
 import PixelFooter from '@/components/PixelFooter';
 import ScanlineEffect from '@/components/ScanlineEffect';
+import Terminal from '@/components/Terminal';
 
 const Index: React.FC = () => {
   // Optional: Add pixel cursor effect
@@ -30,7 +29,6 @@ const Index: React.FC = () => {
 
     window.addEventListener('mousemove', handleMouseMove);
     document.body.addEventListener('mouseleave', handleMouseLeave);
-
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       document.body.removeEventListener('mouseleave', handleMouseLeave);
@@ -38,28 +36,32 @@ const Index: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-[#0a1128] via-[#1e3a8a] to-[#283593] text-white overflow-x-hidden">
       {/* Custom pixel cursor */}
-      <div 
-        id="custom-cursor" 
+      <div
+        id="custom-cursor"
         className="fixed w-4 h-4 bg-pixel-accent z-50 pointer-events-none opacity-0 pixelated"
         style={{ transform: 'translate(-50%, -50%)' }}
-      >
-        
-      </div>
-      
+      />
+
       <PixelNav />
-      <PixelHero />
-      <PixelAbout />
-      <PixelSkills />
-      <PixelProjects />
-      <PixelContact />
+      <PixelHero />    {/* Hero section (uses unified gradient internally) */}
+      <PixelAbout />   {/* About section (uses unified gradient internally) */}
+      <PixelSkills />  {/* Skills section (uses unified gradient internally) */}
+
+      {/* Projects/Terminal section with unified background */}
+      <section id="projects" className="relative py-20 bg-gradient-to-b from-[#1e3a8a] to-[#283593]">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-300/10 via-transparent to-transparent"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <Terminal />
+        </div>
+      </section>
+
+      <PixelContact />  {/* Contact section (uses unified gradient internally) */}
       <PixelFooter />
-      
-      {/* Game-style background grid */}
+
+      {/* Background grid and CRT effect overlays */}
       <div className="fixed inset-0 bg-grid opacity-5 pointer-events-none z-0"></div>
-      
-      {/* CRT scanline effect */}
       <ScanlineEffect />
     </div>
   );

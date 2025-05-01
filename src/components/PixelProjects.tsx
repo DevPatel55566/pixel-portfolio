@@ -16,7 +16,7 @@ const PixelProjects: React.FC = () => {
   
   const projects: Project[] = [
     {
-      title: 'Signed & Trapped – AI Legal Assistant',
+      title: 'Signed & Trapped - AI Legal Assistant',
       description: 'Accelerate your contract analysis through AI-powered legal assistance, blending advanced algorithms with expert legal knowledge for comprehensive document review.',
       details: 'An advanced legal system that streamlines contract review by automatically identifying key clauses, terms, and potential legal issues. It provides comprehensive analysis reports and risk assessments, making legal document processing more efficient for law firms and legal departments.',
       bgGradient: 'from-[#2b5876] to-[#4e4376]',
@@ -24,7 +24,7 @@ const PixelProjects: React.FC = () => {
       buttonText: 'View Project'
     },
     {
-      title: '1DayIntern – Career Simulator',
+      title: '1DayIntern - Career Simulator',
       description: 'Using information gathered from real workplace scenarios, we help uncover career insights to unlock your potential with our interactive simulations.',
       details: 'A dynamic platform that lets users experience different career paths through realistic day-in-the-life scenarios. Users tackle real-world challenges, make critical decisions, and receive immediate feedback on their performance.',
       bgGradient: 'from-[#0f2027] via-[#203a43] to-[#2c5364]',
