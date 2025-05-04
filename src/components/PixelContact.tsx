@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Mail, Linkedin, Instagram } from 'lucide-react';
-import { auth, login, logout } from '@/lib/Firebase';  // Ensure these functions are properly set up in Firebase lib
-import { useChatStore } from "@/store/useChatStore"; // If you're using Zustand or another state store for user info
+import { auth, login, logout } from '@/lib/Firebase';  
+import { useChatStore } from "@/store/useChatStore"; 
 
 const PixelContact: React.FC = () => {
-  const [user, setUser] = useState<any>(null); // Local state to store user info
-  const { setUser: setStoreUser } = useChatStore(); // If you're managing global user state
+  const [user, setUser] = useState<any>(null); 
+  const { setUser: setStoreUser } = useChatStore();
   
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         setUser(authUser);
-        setStoreUser(authUser); // Optionally update global store (like Zustand)
+        setStoreUser(authUser); 
       } else {
         setUser(null);
-        setStoreUser(null); // Clear global store on logout
+        setStoreUser(null); 
       }
     });
     
@@ -37,7 +37,6 @@ const PixelContact: React.FC = () => {
                 Have a project in mind or want to discuss opportunities? I'd love to hear from you.
               </p>
               
-              {/* Social Links */}
               <div className="flex gap-4">
                 <a 
                   href="https://linkedin.com/in/devpatel55566"
@@ -63,7 +62,6 @@ const PixelContact: React.FC = () => {
                 </a>
               </div>
 
-              {/* Authentication - Login/Logout */}
               <div className="mt-8">
                 {user ? (
                   <div className="text-blue-100">
@@ -86,7 +84,6 @@ const PixelContact: React.FC = () => {
               </div>
             </div>
             
-            {/* Contact Form */}
             <form className="space-y-6">
               <div>
                 <input

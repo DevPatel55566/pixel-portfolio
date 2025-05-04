@@ -2,18 +2,18 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDNi4KJIw_ixQM-lS2IleUOgLNRTsrz7LY',
-  authDomain: 'dev---pixel-quest-portfolio.firebaseapp.com',
-  projectId: 'dev---pixel-quest-portfolio',
-  storageBucket: 'dev---pixel-quest-portfolio.appspot.com',
-  messagingSenderId: '682829573427',
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 
-// Sign-in and Sign-out functions
+
 export const login = () => signInWithPopup(auth, provider);
 export const logout = () => signOut(auth);
