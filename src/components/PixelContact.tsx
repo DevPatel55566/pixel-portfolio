@@ -1,26 +1,8 @@
-import React, { useEffect, useState } from 'react';
+
+import React from 'react';
 import { Mail, Linkedin, Instagram } from 'lucide-react';
-import { auth, login, logout } from '@/lib/Firebase';  // Ensure these functions are properly set up in Firebase lib
-import { useChatStore } from "@/store/useChatStore"; // If you're using Zustand or another state store for user info
 
 const PixelContact: React.FC = () => {
-  const [user, setUser] = useState<any>(null); // Local state to store user info
-  const { setUser: setStoreUser } = useChatStore(); // If you're managing global user state
-  
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        setUser(authUser);
-        setStoreUser(authUser); // Optionally update global store (like Zustand)
-      } else {
-        setUser(null);
-        setStoreUser(null); // Clear global store on logout
-      }
-    });
-    
-    return () => unsubscribe();
-  }, [setStoreUser]);
-
   return (
     <section id="contact" className="relative py-20 bg-gradient-to-b from-[#1e3a8a] to-[#0a1128]">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-300/10 via-transparent to-transparent"></div>
@@ -37,7 +19,6 @@ const PixelContact: React.FC = () => {
                 Have a project in mind or want to discuss opportunities? I'd love to hear from you.
               </p>
               
-              {/* Social Links */}
               <div className="flex gap-4">
                 <a 
                   href="https://linkedin.com/in/devpatel55566"
@@ -62,31 +43,8 @@ const PixelContact: React.FC = () => {
                   <Mail className="w-6 h-6 text-blue-200" />
                 </a>
               </div>
-
-              {/* Authentication - Login/Logout */}
-              <div className="mt-8">
-                {user ? (
-                  <div className="text-blue-100">
-                    <p>Welcome, {user.displayName}</p>
-                    <button 
-                      onClick={logout}
-                      className="mt-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 rounded-lg"
-                    >
-                      Log Out
-                    </button>
-                  </div>
-                ) : (
-                  <button 
-                    onClick={login}
-                    className="mt-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 rounded-lg"
-                  >
-                    Login with Google
-                  </button>
-                )}
-              </div>
             </div>
             
-            {/* Contact Form */}
             <form className="space-y-6">
               <div>
                 <input
