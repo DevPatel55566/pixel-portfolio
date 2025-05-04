@@ -4,7 +4,7 @@ import { ArrowRight } from 'lucide-react';
 const PixelHero: React.FC = () => {
   return (
     <section id="home" className="relative min-h-screen flex items-center bg-[#0a1128]">
-      <div className="absolute inset-0 bg-[url('/lovable-uploads/816eab2a-dee0-4043-84d3-c2afad314f02.png')] opacity-50 bg-cover bg-center mix-blend-overlay"></div>
+      {/* <div className="absolute inset-0 bg-[url('/lovable-uploads/816eab2a-dee0-4043-84d3-c2afad314f02.png')] opacity-50 bg-cover bg-center mix-blend-overlay"></div> */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a1128] via-[#1e3a8a]/90 to-[#283593]/80"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl">
