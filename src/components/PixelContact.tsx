@@ -1,8 +1,26 @@
-
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Mail, Linkedin, Instagram } from 'lucide-react';
+import { auth, login, logout } from '@/lib/Firebase';  
+import { useChatStore } from '@/Store/useChatStore';
 
 const PixelContact: React.FC = () => {
+  const [user, setUser] = useState<any>(null); 
+  const { setUser: setStoreUser } = useChatStore();
+  
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if (authUser) {
+        setUser(authUser);
+        setStoreUser(authUser); 
+      } else {
+        setUser(null);
+        setStoreUser(null); 
+      }
+    });
+    
+    return () => unsubscribe();
+  }, [setStoreUser]);
+
   return (
     <section id="contact" className="relative py-20 bg-gradient-to-b from-[#1e3a8a] to-[#0a1128]">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-300/10 via-transparent to-transparent"></div>
@@ -42,6 +60,27 @@ const PixelContact: React.FC = () => {
                 >
                   <Mail className="w-6 h-6 text-blue-200" />
                 </a>
+              </div>
+
+              <div className="mt-8">
+                {user ? (
+                  <div className="text-blue-100">
+                    <p>Welcome, {user.displayName}</p>
+                    <button 
+                      onClick={logout}
+                      className="mt-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 rounded-lg"
+                    >
+                      Log Out
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={login}
+                    className="mt-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 rounded-lg"
+                  >
+                    Login with Google
+                  </button>
+                )}
               </div>
             </div>
             
