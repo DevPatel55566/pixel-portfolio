@@ -15,6 +15,8 @@ const PixelContact: React.FC = () => {
   });
 
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -36,19 +38,44 @@ const PixelContact: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+  
+    // Prepare the email data
+    const emailDataForOwner = {
+      user_name: formData.user_name,
+      user_email: formData.user_email,
+      message: formData.message,
+    };
+  
+    const emailDataForUser = {
+      user_name: formData.user_name,
+      user_email: formData.user_email,
+      message: formData.message,
+    };
+  
+    // Send email to owner (you)
     emailjs.send(
       import.meta.env.VITE_EMAILJS_SERVICE_ID!,
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID!,
-      formData,
+      import.meta.env.VITE_EMAILJS_OWNER_TEMPLATE_ID!, // Template for owner's email
+      emailDataForOwner,
       import.meta.env.VITE_EMAILJS_PUBLIC_KEY!
     ).then(() => {
-      setSent(true);
-      setFormData({ user_name: '', user_email: '', message: '' });
+      // After owner email is sent, send email to user (auto-reply)
+      emailjs.send(
+        import.meta.env.VITE_EMAILJS_SERVICE_ID!,
+        import.meta.env.VITE_EMAILJS_USER_TEMPLATE_ID!, // Auto-reply template for user
+        emailDataForUser, // Data for the auto-reply email
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY!
+      ).then(() => {
+        setSent(true);
+        setFormData({ user_name: '', user_email: '', message: '' });
+      }).catch((error) => {
+        console.error('Error sending user email:', error);
+      });
     }).catch((error) => {
-      console.error('Email send error:', error);
+      console.error('Error sending owner email:', error);
     });
   };
+  
 
   return (
     <section id="contact" className="relative py-20 bg-gradient-to-b from-[#1e3a8a] to-[#0a1128]">
@@ -128,12 +155,16 @@ const PixelContact: React.FC = () => {
                   className="w-full p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-lg focus:border-blue-400 focus:outline-none text-white placeholder-white/50"
                 ></textarea>
               </div>
-              <button type="submit" className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-8 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 backdrop-blur-xl">
-                Send Message
+              <button type="submit" disabled={loading} className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-8 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 backdrop-blur-xl">
+                {loading ? 'Sending...' : 'Send Message'}
               </button>
 
               {sent && (
                 <p className="text-green-400 text-center pt-2">✅ Message sent successfully!</p>
+              )}
+
+              {error && (
+                <p className="text-red-400 text-center pt-2">{error}</p>
               )}
             </form>
           </div>
