@@ -1,229 +1,160 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { projects } from './data/projects';
-import { X } from 'lucide-react';
+import React from 'react';
+import { ArrowRight, Code, Award, Star, FileCode } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Project } from '@/types/project';
+import { projects } from '../components/data/projects';
+
 
 interface ProjectCardProps {
-  projectId: number;
-  isExploding: boolean;
-  closeProject: () => void;
+  project?: Project;
+  projectId?: number;
+  onSelectProject?: (project: Project) => void;
+  isExploding?: boolean;
+  closeProject?: () => void;
 }
 
-const ProjectCard = ({ projectId, isExploding, closeProject }: ProjectCardProps) => {
-  const [project, setProject] = useState(projects.find(p => p.id === projectId) || null);
-  const [showSecretContent, setShowSecretContent] = useState(false);
-
-  useEffect(() => {
-    setProject(projects.find(p => p.id === projectId) || null);
-  }, [projectId]);
-
-  if (!project) return null;
-
-  return (
-    <motion.div
-      initial={{ scale: 0, opacity: 0 }}
-      animate={isExploding ? { 
-        scale: 1, 
-        opacity: 1,
-        transition: { 
-          type: "spring", 
-          damping: 15, 
-          stiffness: 200,
-          duration: 0.5
-        }
-      } : { scale: 0, opacity: 0 }}
-      exit={{ scale: 0, opacity: 0 }}
-      className="fixed inset-0 flex items-center justify-center bg-[#1a1633]/90 z-50 p-4 overflow-hidden"
-    >
-      <motion.button
-        className="absolute top-4 right-4 p-2 rounded-full bg-[#33C3F0]/20 text-[#33C3F0] hover:bg-[#33C3F0]/30 transition-colors"
-        onClick={closeProject}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1, transition: { delay: 0.5 } }}
-      >
-        <X size={20} />
-      </motion.button>
-      
-      <motion.div
-        className="w-full max-w-3xl relative"
-        layoutId={`project-${projectId}`}
-      >
-        <AnimatedParticles isExploding={isExploding} />
-        
-        <Card className="border-[#33C3F0]/20 bg-[#1a1633] text-[#33C3F0] overflow-hidden">
-          <CardHeader>
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <CardTitle className="text-3xl font-bold text-[#33C3F0] flex items-center gap-2">
-                🚀 {project.name}
-              </CardTitle>
-              <CardDescription className="text-[#33C3F0] text-lg">
-                {project.description}
-              </CardDescription>
-            </motion.div>
-          </CardHeader>
+const ProjectCard: React.FC<ProjectCardProps> = ({ 
+  project, 
+  projectId, 
+  onSelectProject,
+  isExploding,
+  closeProject
+}) => {
+  // If projectId is provided, find the matching project from projects data
+  // This is used by Terminal component
+  const terminalProject = projectId ? projects.find(p => p.id === projectId) : null;
+  
+  // If this is a terminal-style card with projectId
+  if (projectId && isExploding !== undefined && closeProject) {
+    return (
+      <div className={`fixed inset-0 flex items-center justify-center z-50 pointer-events-auto transition-opacity duration-300 ${isExploding ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="absolute inset-0 bg-black/70" onClick={closeProject}></div>
+        <div className={`bg-[#0f172a] border-2 border-[#33C3F0] rounded-lg p-6 w-full max-w-2xl mx-4 relative z-10 transition-all duration-500 ${isExploding ? 'scale-100' : 'scale-50'} card`}>
+          <button 
+            className="absolute top-4 right-4 text-white/70 hover:text-white"
+            onClick={closeProject}
+          >
+            ×
+          </button>
           
-          <CardContent className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="space-y-3"
-            >
-              <h3 className="text-xl font-semibold mb-2 text-[#33C3F0]/90">Problem</h3>
-              <div className="bg-[#33C3F0]/10 p-4 rounded-lg text-[#33C3F0]/90">
-                {project.problem}
+          {terminalProject && (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-2xl font-bold text-[#33C3F0]">{terminalProject.name}</h3>
+                {terminalProject.date && (
+                  <span className="text-white/60 text-sm">{terminalProject.date}</span>
+                )}
               </div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="space-y-3"
-            >
-              <h3 className="text-xl font-semibold mb-2 text-[#33C3F0]/90">My Approach</h3>
-              <div className="bg-[#33C3F0]/10 p-4 rounded-lg text-[#33C3F0]/90">
-                {project.approach}
-              </div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-              <h3 className="text-xl font-semibold mb-3 text-[#33C3F0]/90">Technologies Used</h3>
-              <div className="flex gap-2 flex-wrap">
-                {project.technologiesUsed.map((tech, idx) => (
-                  <motion.div 
-                    key={tech}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.5 + idx * 0.1 }}
-                  >
-                    <Badge className="px-3 py-1.5 bg-[#33C3F0]/20 hover:bg-[#33C3F0]/30 text-[#33C3F0] border-[#33C3F0]/30">
-                      {tech}
-                    </Badge>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-            >
-              <h3 className="text-xl font-semibold mb-3 text-[#33C3F0]/90">Achievements</h3>
-              <div className="flex gap-2 flex-wrap">
-                {project.achievements.map((achievement, idx) => (
-                  <motion.div 
-                    key={achievement}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.6 + idx * 0.1 }}
-                  >
-                    <Badge className="px-3 py-1.5 bg-[#33C3F0]/20 hover:bg-[#33C3F0]/30 text-[#33C3F0] border-[#33C3F0]/30">
-                      {achievement}
-                    </Badge>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="mt-8 py-4 flex justify-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-            >
-              <div 
-                className="text-[#33C3F0]/30 text-xs cursor-help hover:text-[#33C3F0]/60 transition-colors relative"
-                onClick={() => setShowSecretContent(true)}
-              >
-                <span className="select-none">click for secret content</span>
-              </div>
-            </motion.div>
-            
-            <AnimatePresence>
-              {showSecretContent && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  className="bg-[#33C3F0]/20 p-4 rounded-lg border border-[#33C3F0]/30 overflow-hidden"
-                >
-                  <div className="text-center">
-                    <h4 className="text-lg font-semibold text-[#33C3F0] mb-2">🎉 You found a secret! 🎉</h4>
-                    <p className="text-[#33C3F0]/90 mb-4">
-                      {project.name === "1DayIntern" && "The 1DayIntern platform was actually inspired by a dream where I was teaching robots how to have job interviews!"}
-                      {project.name === "Signed & Trapped" && "I built this after helping a friend who accidentally signed a 99-year lease. True story."}
-                      {project.name === "NLP Sentiment Analysis" && "This project analyzed over 1 million tweets and found that people are happiest at 3:27pm on Fridays."}
-                      {project.name === "Astronomy FAQ App" && "A question about black holes crashed the first version of this app because the answer was infinite."}
-                    </p>
+              <p className="text-white/80">{terminalProject.description}</p>
+              
+              {/* Display project badges if available */}
+              {terminalProject.badges && terminalProject.badges.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {terminalProject.badges.map((badge, idx) => (
                     <Badge 
+                      key={idx}
                       variant="outline" 
-                      className="bg-[#33C3F0]/20 text-[#33C3F0] border-[#33C3F0]/30 cursor-default"
+                      className="bg-blue-500/20 text-blue-200 border-blue-500/30 flex items-center gap-1.5"
                     >
-                      Secret Explorer Badge Earned
+                      {badge === 'AI' && <Code size={12} />}
+                      {badge === 'Hackathon' && <Award size={12} />}
+                      {badge === 'Gamification' && <Star size={12} />}
+                      {badge === 'Full-Stack' && <FileCode size={12} />}
+                      {badge === 'FAQ System' && <Code size={12} />}
+                      {badge === 'Auth' && <FileCode size={12} />}
+                      {badge === 'Machine Learning' && <Code size={12} />}
+                      {badge === 'Web App' && <FileCode size={12} />}
+                      {badge}
                     </Badge>
-                  </div>
-                </motion.div>
+                  ))}
+                </div>
               )}
-            </AnimatePresence>
-          </CardContent>
-        </Card>
-      </motion.div>
-    </motion.div>
-  );
-};
-
-const AnimatedParticles = ({ isExploding }: { isExploding: boolean }) => {
-  const particleCount = 20;
-  const particles = Array.from({ length: particleCount });
-
+              
+              {/* Detailed description if available */}
+              {terminalProject.fullDescription && (
+                <div className="bg-[#1a1a2e] border border-[#33C3F0]/20 rounded-md p-4">
+                  <h4 className="text-[#33C3F0] font-medium mb-2">Details</h4>
+                  <ul className="space-y-2">
+                    {terminalProject.fullDescription.map((desc, idx) => (
+                      <li key={idx} className="text-white/80 flex items-start gap-2">
+                        <span className="text-[#33C3F0] mt-0.5">•</span>
+                        <span>{desc}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              <div className="bg-[#1a1a2e] border border-[#33C3F0]/20 rounded-md p-4">
+                <h4 className="text-[#33C3F0] font-medium mb-2">Problem</h4>
+                <p className="text-white/80">{terminalProject.problem}</p>
+              </div>
+              
+              <div className="bg-[#1a1a2e] border border-[#33C3F0]/20 rounded-md p-4">
+                <h4 className="text-[#33C3F0] font-medium mb-2">Approach</h4>
+                <p className="text-white/80">{terminalProject.approach}</p>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h4 className="text-[#33C3F0] font-medium mb-2">Technologies</h4>
+                  <ul className="list-disc pl-5 text-white/80">
+                    {terminalProject.technologiesUsed.map((tech, idx) => (
+                      <li key={idx}>{tech}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="text-[#33C3F0] font-medium mb-2">Achievements</h4>
+                  <ul className="list-disc pl-5 text-white/80">
+                    {terminalProject.achievements.map((achievement, idx) => (
+                      <li key={idx}>{achievement}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              
+              <div className="flex justify-center mt-4">
+                <button
+                  className="bg-[#33C3F0] text-white px-6 py-2 rounded-md hover:bg-[#33C3F0]/80"
+                  onClick={closeProject}
+                >
+                  Close Project
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+  
+  // If this is a regular project card
+  if (!project) return null;
+  
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {particles.map((_, index) => {
-        const angle = (index / particleCount) * 360;
-        const distance = Math.random() * 100 + 50;
-        const delay = Math.random() * 0.2;
-        const duration = Math.random() * 0.5 + 0.5;
-        const size = Math.random() * 5 + 3;
+    <div 
+      className="backdrop-blur-xl bg-white/5 rounded-2xl border border-white/10 p-8 group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/20 relative overflow-hidden"
+    >
+      <div className="relative z-10">
+        <h3 className="text-2xl font-bold mb-4 bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+          {project.title}
+        </h3>
+        <p className="text-blue-100/90 mb-8 line-clamp-3">
+          {project.description}
+        </p>
+        <button
+          onClick={() => onSelectProject && onSelectProject(project)}
+          className={`bg-gradient-to-r ${project.buttonGradient} text-white px-6 py-3 rounded-full flex items-center gap-2 text-sm transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/20 group-hover:gap-3`}
+        >
+          {project.buttonText}
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
 
-        return (
-          <motion.div
-            key={index}
-            className="absolute bg-[#33C3F0] rounded-full opacity-80"
-            style={{
-              width: size,
-              height: size,
-              left: '50%',
-              top: '50%',
-              x: '-50%',
-              y: '-50%',
-            }}
-            initial={{ scale: 0 }}
-            animate={isExploding ? {
-              x: `calc(-50% + ${Math.cos(angle * (Math.PI / 180)) * distance}px)`,
-              y: `calc(-50% + ${Math.sin(angle * (Math.PI / 180)) * distance}px)`,
-              scale: [0, 1, 0],
-              opacity: [0, 1, 0],
-              transition: {
-                duration: duration,
-                delay: delay,
-                ease: "easeOut",
-              }
-            } : {}}
-          />
-        );
-      })}
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 -mr-10 -mt-10 w-40 h-40 blur-[100px] rounded-full bg-blue-500/30 z-0"></div>
+      <div className="absolute bottom-0 left-0 -ml-10 -mb-10 w-40 h-40 blur-[100px] rounded-full bg-cyan-500/30 z-0"></div>
     </div>
   );
 };

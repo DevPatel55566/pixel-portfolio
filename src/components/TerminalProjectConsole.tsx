@@ -1,249 +1,532 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useToast } from '@/hooks/use-toast';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { commands } from './data/commands';
 import { projects } from './data/projects';
-import { Badge as BadgeType } from './data/badges';
-import ProjectCard from './ProjectCard'
-import { Award, Zap, Gift } from 'lucide-react';
+import { commands } from './data/commands';
+import ProjectCard from '@/components/ProjectCard';
+import ProjectGalleryModal from './projectGalleryModal';
+import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
+import { Award, Code, Terminal, Star, FileCode, FileSearch, Check } from 'lucide-react';
 
-const TerminalProjectConsole = () => {
+interface CommandHistoryItem {
+  command: string;
+  output: React.ReactNode;
+}
+
+const TerminalProjectConsole: React.FC = () => {
   const [input, setInput] = useState('');
-  const [output, setOutput] = useState<string[]>(['Welcome to the interactive project explorer', 'Type "help" to see available commands']);
   const [isTyping, setIsTyping] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<number | null>(null);
-  const [isExploding, setIsExploding] = useState(false);
-  const [earnedBadges, setEarnedBadges] = useState<BadgeType[]>([]);
-  const [showBadgeAnimation, setShowBadgeAnimation] = useState<BadgeType | null>(null);
-  const terminalRef = useRef<HTMLDivElement>(null);
+  const [commandHistory, setCommandHistory] = useState<CommandHistoryItem[]>([
+    { 
+      command: 'help', 
+      output: (
+        <div className="text-[#33C3F0] animate-fade-in">
+          <p className="mb-2">Available commands:</p>
+          <ul className="pl-4 space-y-1">
+            <li><span className="text-pink-400">help</span> - Show available commands</li>
+            <li><span className="text-pink-400">ls</span> - List all projects</li>
+            <li><span className="text-pink-400">open [id]</span> - View details of a specific project</li>
+            <li><span className="text-pink-400">projects --gallery</span> - View project gallery</li>
+            <li><span className="text-pink-400">projects --view [id]</span> - View specific project</li>
+            <li><span className="text-pink-400">techstack [id]</span> - View technologies used in a project</li>
+            <li><span className="text-pink-400">badges</span> - Show earned badges</li>
+            <li><span className="text-pink-400">clear</span> - Clear terminal output</li>
+          </ul>
+        </div>
+      ) 
+    }
+  ]);
+  const [activeProjectId, setActiveProjectId] = useState<number | null>(null);
+  const [isExplodingProject, setIsExplodingProject] = useState(false);
+  const [showProjectGallery, setShowProjectGallery] = useState(false);
+  const [earnedBadges, setEarnedBadges] = useState<string[]>([]);
+  
   const inputRef = useRef<HTMLInputElement>(null);
+  const consoleEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  const typeCommand = async (command: string) => {
-    setIsTyping(true);
-    for (let i = 0; i <= command.length; i++) {
-      setInput(command.slice(0, i));
-      await new Promise(resolve => setTimeout(resolve, 50));
+  // Focus the input when component mounts
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
     }
+  }, []);
+
+  // Scroll to bottom when command history changes
+  useEffect(() => {
+    if (consoleEndRef.current) {
+      consoleEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [commandHistory]);
+
+  // Typewriter effect function
+  const typeCommand = async (cmd: string) => {
+    setIsTyping(true);
+    setInput('');
+    
+    // Type each character with a delay
+    for (let i = 0; i <= cmd.length; i++) {
+      setInput(cmd.substring(0, i));
+      // Random delay between 30-70ms for natural typing feel
+      await new Promise(resolve => setTimeout(resolve, 30 + Math.random() * 40));
+    }
+    
+    // Short pause after typing is complete before executing
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
     setIsTyping(false);
+    handleCommand(cmd);
+  };
+
+  // Handle command submission
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!input.trim() || isTyping) return;
+    
+    const command = input.trim();
     handleCommand(command);
   };
 
-  const handleCommand = (cmd: string) => {
-    let newOutput = [...output, `\n> ${cmd}`];
-    
-    const args = cmd.trim().split(' ');
-    const command = args[0].toLowerCase();
-    
-    if (command === 'ls') {
-      newOutput = [...newOutput, ...projects.map(p => `${p.id}. ${p.name} - ${p.description}`)];
-      checkAndAwardBadge('explorer');
-    } else if (command === 'open' && args.length > 1) {
-      const projectQuery = args.slice(1).join(' ').toLowerCase().trim();
+  const checkAndAwardBadge = (badgeId: string) => {
+    if (!earnedBadges.includes(badgeId)) {
+      const newBadges = [...earnedBadges, badgeId];
+      setEarnedBadges(newBadges);
       
-      let project = projects.find(p => p.name.toLowerCase() === projectQuery);
-      
-      if (!project) {
-        project = projects.find(p => p.name.toLowerCase().includes(projectQuery));
-      }
-      
-      if (!project && !isNaN(Number(projectQuery))) {
-        project = projects.find(p => p.id === Number(projectQuery));
-      }
-      
-      if (project) {
-        setSelectedProject(project.id);
-        setIsExploding(true);
-        newOutput = [...newOutput, `Opening ${project.name}...`];
-        
-        if (project.name.toLowerCase().includes('ai')) {
-          checkAndAwardBadge('ai_master');
-        } else if (project.name.toLowerCase().includes('intern')) {
-          checkAndAwardBadge('career_explorer');
-        }
-        
+      const badge = commands.find(cmd => cmd.badgeId === badgeId)?.badge;
+      if (badge) {
         toast({
-          title: `🎉 Opening ${project.name}`,
-          description: "Launching project viewer...",
-        });
-      } else {
-        newOutput = [...newOutput, `Error: Project "${projectQuery}" not found. Try 'ls' to see available projects.`];
-        toast({
-          title: "❌ Project Not Found",
-          description: "Use 'ls' to see available projects.",
-          variant: "destructive",
+          title: `🏆 Badge Earned: ${badge.name}`,
+          description: badge.description,
         });
       }
-    } else if (command === 'clear') {
-      newOutput = [];
-    } else if (command === 'help') {
-      newOutput = [...newOutput, ...commands.map(c => `${c.command}: ${c.description}`)];
+    }
+  };
+
+  const handleCommand = (command: string) => {
+    const args = command.split(' ');
+    const cmd = args[0].toLowerCase();
+    let output: React.ReactNode;
+    
+    // Process commands
+    if (cmd === 'clear') {
+      setCommandHistory([]);
+      setInput('');
+      return;
+    } else if (cmd === 'help') {
       checkAndAwardBadge('helper');
-    } else if (command === 'badges') {
-      if (earnedBadges.length === 0) {
-        newOutput = [...newOutput, "You haven't earned any badges yet. Keep exploring!"];
+      output = (
+        <div className="text-[#33C3F0] animate-fade-in">
+          <p className="mb-2">Available commands:</p>
+          <ul className="pl-4 space-y-1">
+            <li><span className="text-pink-400">help</span> - Show available commands</li>
+            <li><span className="text-pink-400">ls</span> - List all projects</li>
+            <li><span className="text-pink-400">open [id]</span> - View details of a specific project</li>
+            <li><span className="text-pink-400">projects --gallery</span> - View project gallery</li>
+            <li><span className="text-pink-400">projects --view [id]</span> - View specific project</li>
+            <li><span className="text-pink-400">techstack [id]</span> - View technologies used in a project</li>
+            <li><span className="text-pink-400">badges</span> - Show earned badges</li>
+            <li><span className="text-pink-400">clear</span> - Clear terminal output</li>
+          </ul>
+        </div>
+      );
+    } else if (cmd === 'ls') {
+      checkAndAwardBadge('explorer');
+      output = (
+        <div className="space-y-2 animate-fade-in">
+          <p className="text-[#33C3F0]">Available projects:</p>
+          <div className="border border-[#33C3F0]/30 rounded-md overflow-hidden">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-[#33C3F0]/20">
+                <tr>
+                  <th className="p-2 border-b border-[#33C3F0]/30">ID</th>
+                  <th className="p-2 border-b border-[#33C3F0]/30">Name</th>
+                  <th className="p-2 border-b border-[#33C3F0]/30">Description</th>
+                  <th className="p-2 border-b border-[#33C3F0]/30">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {projects.map(project => (
+                  <tr key={project.id} className="border-b border-[#33C3F0]/20 last:border-0">
+                    <td className="p-2 text-yellow-400">{project.id}</td>
+                    <td className="p-2 text-green-400">{project.name}</td>
+                    <td className="p-2 text-white/80">{project.description}</td>
+                    <td className="p-2 text-white/60">{project.date || 'N/A'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="text-white/60 text-sm">Use <span className="text-pink-400">open [id]</span> to view project details</p>
+        </div>
+      );
+    } else if (cmd === 'open') {
+      const idOrName = args[1]?.trim();
+      if (!idOrName) {
+        output = (
+          <div className="text-red-400 animate-fade-in">
+            Error: Please specify a project ID or name. Use <span className="text-pink-400">ls</span> to see available projects.
+          </div>
+        );
       } else {
-        newOutput = [...newOutput, "Earned Badges:", ...earnedBadges.map(badge => `- ${badge.name}: ${badge.description}`)];
+        const projectId = parseInt(idOrName);
+      
+        // Try to find by ID or by name
+        const project = Number.isNaN(projectId) 
+          ? projects.find(p => p.name.toLowerCase() === idOrName.toLowerCase())
+          : projects.find(p => p.id === projectId);
+        
+        if (project) {
+          setActiveProjectId(project.id);
+          setIsExplodingProject(true);
+          checkAndAwardBadge('opener');
+          
+          // Check for special badges based on project type
+          if (project.badges?.includes('AI')) {
+            checkAndAwardBadge('ai_master');
+          }
+          if (project.name === '1DayIntern') {
+            checkAndAwardBadge('career_explorer');
+          }
+          
+          output = (
+            <div className="text-green-400 animate-fade-in">
+              Opening project: {project.name}...
+              {project.badges && project.badges.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {project.badges.map((badge, idx) => (
+                    <Badge 
+                      key={idx} 
+                      variant="outline" 
+                      className="bg-blue-500/20 text-blue-200 border-blue-500/30"
+                    >
+                      {badge}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        } else {
+          output = (
+            <div className="text-red-400 animate-fade-in">
+              Error: Project not found. Use <span className="text-pink-400">ls</span> to see available projects.
+            </div>
+          );
+        }
       }
+    } else if (cmd === 'techstack') {
+      checkAndAwardBadge('tech_guru');
+      const projectId = parseInt(args[1]);
+      
+      if (!args[1]) {
+        output = (
+          <div className="text-red-400 animate-fade-in">
+            Error: Please specify a project ID. Example: <span className="text-pink-400">techstack 1</span>
+          </div>
+        );
+      } else if (isNaN(projectId)) {
+        output = (
+          <div className="text-red-400 animate-fade-in">
+            Error: Invalid project ID. Please provide a valid number.
+          </div>
+        );
+      } else {
+        const project = projects.find(p => p.id === projectId);
+        
+        if (project) {
+          output = (
+            <div className="animate-fade-in">
+              <h3 className="text-[#33C3F0] text-lg mb-2">Tech Stack for {project.name}:</h3>
+              <div className="bg-[#1a1a2e] border border-[#33C3F0]/20 p-4 rounded-md">
+                <ul className="space-y-2">
+                  {project.technologiesUsed.map((tech, idx) => (
+                    <li key={idx} className="flex items-center gap-2 text-white/90">
+                      <FileCode size={16} className="text-[#33C3F0]" />
+                      {tech}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          );
+        } else {
+          output = (
+            <div className="text-red-400 animate-fade-in">
+              Error: Project with ID {projectId} not found. Use <span className="text-pink-400">ls</span> to see available projects.
+            </div>
+          );
+        }
+      }
+    } else if (cmd === 'badges') {
       checkAndAwardBadge('collector');
-    } else if (command === 'secret') {
-      newOutput = [...newOutput, "🎉 You found a secret command! You're a true explorer."];
+      
+      if (earnedBadges.length === 0) {
+        output = (
+          <div className="text-yellow-400 animate-fade-in">
+            You haven't earned any badges yet. Keep exploring the projects and trying different commands!
+          </div>
+        );
+      } else {
+        const earnedBadgeObjects = commands
+          .filter(cmd => cmd.badgeId && earnedBadges.includes(cmd.badgeId))
+          .map(cmd => cmd.badge)
+          .filter(Boolean);
+        
+        output = (
+          <div className="animate-fade-in">
+            <h3 className="text-[#33C3F0] text-lg mb-2">Your Earned Badges:</h3>
+            <div className="flex flex-wrap gap-2 mt-3">
+              {earnedBadgeObjects.map((badge, idx) => (
+                <div key={idx} className="bg-[#1a1a2e] border border-[#33C3F0]/20 p-3 rounded-md flex items-center gap-3">
+                  {badge?.icon === 'code' && <Code className="text-yellow-400" size={18} />}
+                  {badge?.icon === 'terminal' && <Terminal className="text-green-400" size={18} />}
+                  {badge?.icon === 'file-code' && <FileCode className="text-blue-400" size={18} />}
+                  {badge?.icon === 'file-search' && <FileSearch className="text-purple-400" size={18} />}
+                  {badge?.icon === 'badge' && <Award className="text-pink-400" size={18} />}
+                  {badge?.icon === 'award' && <Award className="text-yellow-400" size={18} />}
+                  {badge?.icon === 'star' && <Star className="text-yellow-400" size={18} />}
+                  <div>
+                    <div className="font-medium text-white">{badge?.name}</div>
+                    <div className="text-xs text-white/70">{badge?.description}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+    } else if (cmd === 'projects') {
+      const flag = args[1]?.toLowerCase();
+      
+      if (!flag) {
+        output = (
+          <div className="text-white animate-fade-in">
+            Usage: <span className="text-pink-400">projects --gallery</span> | <span className="text-pink-400">projects --view &lt;project-id&gt;</span>
+          </div>
+        );
+      } else if (flag === '--gallery') {
+        setShowProjectGallery(true);
+        output = (
+          <div className="text-green-400 animate-fade-in">
+            Opening project gallery view...
+          </div>
+        );
+      } else if (flag === '--view') {
+        const projectId = parseInt(args[2]);
+        
+        if (!args[2]) {
+          output = (
+            <div className="text-red-400 animate-fade-in">
+              Error: Please specify a project ID. Example: <span className="text-pink-400">projects --view 1</span>
+            </div>
+          );
+        } else if (isNaN(projectId)) {
+          output = (
+            <div className="text-red-400 animate-fade-in">
+              Error: Invalid project ID. Please provide a valid number.
+            </div>
+          );
+        } else {
+          const project = projects.find(p => p.id === projectId);
+          
+          if (project) {
+            setActiveProjectId(project.id);
+            setIsExplodingProject(true);
+            checkAndAwardBadge('opener');
+            
+            // Check for special badges based on project type
+            if (project.badges?.includes('AI')) {
+              checkAndAwardBadge('ai_master');
+            }
+            if (project.name === '1DayIntern') {
+              checkAndAwardBadge('career_explorer');
+            }
+            
+            output = (
+              <div className="text-green-400 animate-fade-in">
+                Opening project: {project.name}...
+                {project.badges && project.badges.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {project.badges.map((badge, idx) => (
+                      <Badge 
+                        key={idx} 
+                        variant="outline" 
+                        className="bg-blue-500/20 text-blue-200 border-blue-500/30"
+                      >
+                        {badge}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          } else {
+            output = (
+              <div className="text-red-400 animate-fade-in">
+                Error: Project with ID {projectId} not found. Use <span className="text-pink-400">ls</span> to see available projects.
+              </div>
+            );
+          }
+        }
+      } else {
+        output = (
+          <div className="text-red-400 animate-fade-in">
+            Error: Unknown flag "{flag}". Available flags: --gallery, --view &lt;project-id&gt;
+          </div>
+        );
+      }
+    } else if (cmd === 'secret') {
       checkAndAwardBadge('discoverer');
-    } else if (cmd.trim() !== '') {
-      newOutput = [...newOutput, `Command not recognized: ${command}. Type 'help' for available commands.`];
+      output = (
+        <div className="bg-[#1a1a2e] border border-[#33C3F0]/20 p-4 rounded-md animate-fade-in">
+          <div className="text-center mb-2">
+            <span className="text-[#33C3F0] text-lg">🎉 You found a secret! 🎉</span>
+          </div>
+          <p className="text-white/80 mb-3">
+            Congratulations on discovering the secret command! As a reward, here's a special message:
+          </p>
+          <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-3 rounded-md">
+            <p className="text-center text-white font-medium">
+              "The best developers are the ones who never stop exploring."
+            </p>
+          </div>
+          <div className="flex justify-center mt-4">
+            <div className="bg-purple-500/40 border border-purple-500/60 text-purple-100 px-3 py-1 rounded-full text-sm">
+              Secret Explorer Badge Earned
+            </div>
+          </div>
+        </div>
+      );
+    } else {
+      output = (
+        <div className="text-red-400 animate-fade-in">
+          Command not recognized: "{command}". Type <span className="text-pink-400">help</span> for available commands.
+        </div>
+      );
     }
     
-    setOutput(newOutput);
+    setCommandHistory([...commandHistory, { command, output }]);
     setInput('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (input) {
-      handleCommand(input);
-    }
-  };
-  
   const closeProject = () => {
-    setSelectedProject(null);
-    setIsExploding(false);
-    setOutput([...output, '\nReturned to terminal']);
+    setActiveProjectId(null);
+    setIsExplodingProject(false);
   };
 
-  const checkAndAwardBadge = (badgeId: string) => {
-    const badge = commands.find(c => c.badgeId === badgeId)?.badge;
-    
-    if (badge && !earnedBadges.some(b => b.id === badge.id)) {
-      const newBadges = [...earnedBadges, badge];
-      setEarnedBadges(newBadges);
-      setShowBadgeAnimation(badge);
-      
-      toast({
-        title: `🏆 Badge Unlocked: ${badge.name}`,
-        description: badge.description,
-      });
-      
-      setTimeout(() => {
-        setShowBadgeAnimation(null);
-      }, 3000);
+  // Demo commands to demonstrate typewriter effect
+  const runDemoCommand = (command: string) => {
+    if (!isTyping) {
+      typeCommand(command);
     }
   };
-
-  useEffect(() => {
-    if (!isExploding && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isExploding, output]);
 
   return (
-    <>
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className={`min-h-[500px] w-full max-w-3xl mx-auto bg-[#1a1633]/90 rounded-lg p-4 font-mono text-[#33C3F0] shadow-2xl border border-[#33C3F0]/20 ${isExploding ? 'hidden' : 'block'}`}
-        ref={terminalRef}
-      >
-        <div className="flex justify-between items-center mb-4">
-          <div className="flex gap-2">
-            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-            <div className="w-3 h-3 rounded-full bg-green-500/80" />
-          </div>
-          <div className="text-xs text-[#33C3F0]/60">
-            project-explorer ~ {earnedBadges.length > 0 && `${earnedBadges.length} badges earned`}
+    <div className="relative">
+      {/* Terminal UI */}
+      <div className="bg-[#0c0c16] border border-[#33C3F0]/20 rounded-lg overflow-hidden shadow-xl shadow-blue-500/5">
+        {/* Terminal Header */}
+        <div className="flex items-center gap-1.5 px-4 py-3 bg-[#151528] border-b border-[#33C3F0]/20">
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          <div className="flex-1 text-center">
+            <span className="text-[#33C3F0]/70 text-xs font-mono">projects@terminal ~ </span>
           </div>
         </div>
         
-        <div className="h-[400px] overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-[#33C3F0]/20">
-          {output.map((line, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="whitespace-pre-wrap"
-            >
-              {line}
-            </motion.div>
+        {/* Terminal Content */}
+        <div className="h-[400px] overflow-y-auto p-4 font-mono text-sm">
+          {/* Command history */}
+          {commandHistory.map((item, index) => (
+            <div key={index} className="mb-4">
+              <div className="flex items-center text-[#33C3F0] mb-1">
+                <span className="mr-2">❯</span>
+                <span>{item.command}</span>
+              </div>
+              <div className="pl-4 text-white/80">
+                {item.output}
+              </div>
+            </div>
           ))}
           
-          <form onSubmit={handleSubmit} className="flex items-center gap-2">
-            <span className="text-[#33C3F0]">{'>'}</span>
+          {/* Current command input */}
+          <form onSubmit={handleSubmit} className="flex items-center text-[#33C3F0]">
+            <span className="mr-2">❯</span>
             <input
               ref={inputRef}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className="flex-1 bg-transparent border-none outline-none text-[#33C3F0]"
-              disabled={isTyping}
               autoFocus
+              spellCheck="false"
+              aria-label="Terminal input"
+              disabled={isTyping}
             />
+            {isTyping && <span className="animate-pulse">|</span>}
           </form>
+          
+          {/* This element helps us auto-scroll to the bottom */}
+          <div ref={consoleEndRef}></div>
         </div>
+      </div>
 
-        <div className="mt-4 text-sm text-[#33C3F0]/60 grid grid-cols-2 gap-2">
-          <div>
-            <p className="font-bold mb-1">Available commands:</p>
-            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> ls: List all projects</p>
-            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> open [name/id]: View project</p>
-            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> badges: View earned badges</p>
-          </div>
-          <div>
-            <p className="font-bold mb-1">More commands:</p>
-            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> clear: Clear terminal</p>
-            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> help: Show all commands</p>
-            <p className="flex items-center gap-1 text-[#33C3F0]/40"><span className="text-[#33C3F0]/40">•</span> ...and some secrets</p>
-          </div>
-        </div>
+      {/* Quick command buttons */}
+      <div className="flex flex-wrap gap-2 mt-4 justify-center">
+        <button 
+          onClick={() => runDemoCommand('ls')}
+          className="bg-[#1a1633]/60 border border-[#33C3F0]/20 rounded-md px-3 py-1.5 text-xs font-mono text-[#33C3F0] hover:bg-[#33C3F0]/10 transition-colors"
+          disabled={isTyping}
+        >
+          Try: ls
+        </button>
+        <button 
+          onClick={() => runDemoCommand('projects --gallery')}
+          className="bg-[#1a1633]/60 border border-[#33C3F0]/20 rounded-md px-3 py-1.5 text-xs font-mono text-[#33C3F0] hover:bg-[#33C3F0]/10 transition-colors"
+          disabled={isTyping}
+        >
+          Try: projects --gallery
+        </button>
+        <button 
+          onClick={() => runDemoCommand('badges')}
+          className="bg-[#1a1633]/60 border border-[#33C3F0]/20 rounded-md px-3 py-1.5 text-xs font-mono text-[#33C3F0] hover:bg-[#33C3F0]/10 transition-colors"
+          disabled={isTyping}
+        >
+          Try: badges
+        </button>
+        <button 
+          onClick={() => runDemoCommand('help')}
+          className="bg-[#1a1633]/60 border border-[#33C3F0]/20 rounded-md px-3 py-1.5 text-xs font-mono text-[#33C3F0] hover:bg-[#33C3F0]/10 transition-colors"
+          disabled={isTyping}
+        >
+          Try: help
+        </button>
+      </div>
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          {earnedBadges.map(badge => (
-            <Badge 
-              key={badge.id}
-              variant="outline"
-              className="bg-[#33C3F0]/10 text-[#33C3F0] border-[#33C3F0]/30 flex items-center gap-1.5 px-3 py-1.5 hover:bg-[#33C3F0]/20 cursor-help transition-all glow"
-            >
-              {badge.icon === 'Award' && <Award className="h-3.5 w-3.5" />}
-              {badge.icon === 'Zap' && <Zap className="h-3.5 w-3.5" />}
-              {badge.icon === 'Gift' && <Gift className="h-3.5 w-3.5" />}
-              {badge.name}
-            </Badge>
-          ))}
-        </div>
-      </motion.div>
-
-      <AnimatePresence>
-        {showBadgeAnimation && (
-          <motion.div
-            initial={{ scale: 0.5, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.5, opacity: 0, y: 20 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            className="fixed bottom-6 right-6 bg-[#33C3F0]/90 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 z-50"
-          >
-            {showBadgeAnimation.icon === 'Award' && <Award className="h-5 w-5" />}
-            {showBadgeAnimation.icon === 'Zap' && <Zap className="h-5 w-5" />}
-            {showBadgeAnimation.icon === 'Gift' && <Gift className="h-5 w-5" />}
-            <div>
-              <div className="font-semibold">Badge Unlocked: {showBadgeAnimation.name}</div>
-              <div className="text-xs">{showBadgeAnimation.description}</div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <AnimatePresence>
-        {selectedProject !== null && (
+      {/* Project Card Modal (conditionally rendered) */}
+      {activeProjectId && (
+        <div className="absolute inset-0 pointer-events-none">
           <ProjectCard 
-            projectId={selectedProject} 
-            isExploding={isExploding} 
+            projectId={activeProjectId} 
+            isExploding={isExplodingProject} 
             closeProject={closeProject} 
           />
-        )}
-      </AnimatePresence>
-    </>
+        </div>
+      )}
+
+      {/* Project Gallery Modal */}
+      {showProjectGallery && (
+        <ProjectGalleryModal 
+          isOpen={showProjectGallery} 
+          onClose={() => setShowProjectGallery(false)}
+          onSelectProject={(projectId) => {
+            setActiveProjectId(projectId);
+            setIsExplodingProject(true);
+          }}
+        />
+      )}
+    </div>
   );
 };
 

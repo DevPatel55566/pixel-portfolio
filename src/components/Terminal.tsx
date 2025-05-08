@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
 import { useToast } from '@/hooks/use-toast';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Award, Zap, Gift } from 'lucide-react';
 import ProjectCard from './ProjectCard';
+import ProjectGalleryModal from './projectGalleryModal';
 import { commands } from './data/commands';
 import { projects } from './data/projects';
 import { Badge as BadgeType } from './data/badges';
@@ -18,6 +18,7 @@ const Terminal = () => {
   const [isExploding, setIsExploding] = useState(false);
   const [earnedBadges, setEarnedBadges] = useState<BadgeType[]>([]);
   const [showBadgeAnimation, setShowBadgeAnimation] = useState<BadgeType | null>(null);
+  const [showProjectGallery, setShowProjectGallery] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -92,6 +93,53 @@ const Terminal = () => {
     } else if (command === 'secret') {
       newOutput = [...newOutput, "🎉 You found a secret command! You're a true explorer."];
       checkAndAwardBadge('discoverer');
+    } else if (command === 'projects') {
+      // Handle projects command with flags
+      if (args.length > 1) {
+        const flag = args[1].toLowerCase();
+        
+        if (flag === '--gallery') {
+          newOutput = [...newOutput, "Opening project gallery view..."];
+          setShowProjectGallery(true);
+        } else if (flag === '--view' && args.length > 2) {
+          const projectId = parseInt(args[2]);
+          
+          if (!isNaN(projectId)) {
+            const project = projects.find(p => p.id === projectId);
+            
+            if (project) {
+              newOutput = [...newOutput, `Opening detailed view for project: ${project.name}...`];
+              setSelectedProject(projectId);
+              setIsExploding(true);
+              
+              toast({
+                title: `🎉 Opening ${project.name}`,
+                description: "Launching project viewer...",
+              });
+            } else {
+              newOutput = [...newOutput, `Error: Project with ID ${projectId} not found. Try 'ls' to see available projects.`];
+              
+              toast({
+                title: "❌ Project Not Found",
+                description: "Use 'ls' to see available projects.",
+                variant: "destructive",
+              });
+            }
+          } else {
+            newOutput = [...newOutput, `Error: Invalid project ID. Try 'projects --view 1' to view project with ID 1.`];
+            
+            toast({
+              title: "❌ Invalid Project ID",
+              description: "Please provide a valid project ID.",
+              variant: "destructive",
+            });
+          }
+        } else {
+          newOutput = [...newOutput, `Error: Unknown flag "${flag}". Available flags: --gallery, --view <project-id>`];
+        }
+      } else {
+        newOutput = [...newOutput, "Usage: projects --gallery | projects --view <project-id>"];
+      }
     } else if (cmd.trim() !== '') {
       newOutput = [...newOutput, `Command not recognized: ${command}. Type 'help' for available commands.`];
     }
@@ -189,13 +237,13 @@ const Terminal = () => {
             <p className="font-bold mb-1">Available commands:</p>
             <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> ls: List all projects</p>
             <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> open [name/id]: View project</p>
-            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> badges: View earned badges</p>
+            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> projects --gallery: View project gallery</p>
           </div>
           <div>
             <p className="font-bold mb-1">More commands:</p>
-            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> clear: Clear terminal</p>
-            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> help: Show all commands</p>
-            <p className="flex items-center gap-1 text-[#33C3F0]/40"><span className="text-[#33C3F0]/40">•</span> ...and some secrets</p>
+            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> projects --view [id]: View specific project</p>
+            <p className="flex items-center gap-1"><span className="text-[#33C3F0]">•</span> badges: View earned badges</p>
+            <p className="flex items-center gap-1 text-[#33C3F0]/40"><span className="text-[#33C3F0]/40">•</span> help: Show all commands</p>
           </div>
         </div>
 
@@ -244,6 +292,18 @@ const Terminal = () => {
           />
         )}
       </AnimatePresence>
+
+      {/* Project Gallery Modal */}
+      {showProjectGallery && (
+        <ProjectGalleryModal 
+          isOpen={showProjectGallery} 
+          onClose={() => setShowProjectGallery(false)}
+          onSelectProject={(projectId) => {
+            setSelectedProject(projectId);
+            setIsExploding(true);
+          }}
+        />
+      )}
     </>
   );
 };
