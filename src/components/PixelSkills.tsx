@@ -39,7 +39,6 @@ const PixelSkills: React.FC = () => {
       { name: 'MongoDB', category: 'database', level: 80, icon: '🍃' },
       { name: 'PostgreSQL', category: 'database', level: 80, icon: '🐘' },
       { name: 'Supabase', category: 'database', level: 75, icon: '⚡' },
-      { name: 'Firebase', category: 'database', level: 75, icon: '🔥' },
     ],
     devops: [
       { name: 'Git', category: 'devops', level: 85, icon: '🔄' },
@@ -53,6 +52,7 @@ const PixelSkills: React.FC = () => {
       { name: 'AWS', category: 'devops', level: 80, icon: '☁️' },
       { name: 'Google Cloud', category: 'devops', level: 75, icon: '☁️' },
       { name: 'Azure', category: 'devops', level: 75, icon: '☁️' },
+      { name: 'Firebase', category: 'devops', level: 75, icon: '🔥' },
     ],
   };
 
