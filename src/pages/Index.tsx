@@ -6,7 +6,6 @@ import PixelSkills from '@/components/PixelSkills';
 import PixelContact from '@/components/PixelContact';
 import PixelFooter from '@/components/PixelFooter';
 import ScanlineEffect from '@/components/ScanlineEffect';
-import Terminal from '@/components/Terminal';
 import PixelProjectsTerminal from '@/components/PixelProjectTerminals';
 
 const Index: React.FC = () => {
