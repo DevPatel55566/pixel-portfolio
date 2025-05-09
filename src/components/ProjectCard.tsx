@@ -33,9 +33,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         <div
           className="
             bg-[#0f172a] border-2 border-[#33C3F0] rounded-lg p-6
-            w-[700px] h-[700px]               /* fixed square */
-            max-w-[90vw] max-h-[90vh]         /* responsive cap */
-            overflow-auto                     /* scroll if content too tall */
+            w-[700px] h-[700px]               
+            max-w-[90vw] max-h-[90vh]         
+            overflow-auto                     
             relative z-10 transition-all duration-500
           "
           onClick={(e) => e.stopPropagation()}

@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Mail, Linkedin, Instagram } from 'lucide-react';
-import { auth, login, logout } from '@/lib/Firebase';  
 import { useChatStore } from '@/Store/useChatStore';
 import emailjs from 'emailjs-com';
 
 const PixelContact: React.FC = () => {
-  const [user, setUser] = useState<any>(null); 
   const { setUser: setStoreUser } = useChatStore();
 
   const [formData, setFormData] = useState({
@@ -18,64 +16,48 @@ const PixelContact: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        setUser(authUser);
-        setStoreUser(authUser); 
-      } else {
-        setUser(null);
-        setStoreUser(null); 
-      }
-    });
-    
-    return () => unsubscribe();
-  }, [setStoreUser]);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  
-    // Prepare the email data
-    const emailDataForOwner = {
+    setLoading(true);
+    setError(null);
+
+    const emailData = {
       user_name: formData.user_name,
       user_email: formData.user_email,
       message: formData.message,
     };
-  
-    const emailDataForUser = {
-      user_name: formData.user_name,
-      user_email: formData.user_email,
-      message: formData.message,
-    };
-  
-    // Send email to owner (you)
-    emailjs.send(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID!,
-      import.meta.env.VITE_EMAILJS_OWNER_TEMPLATE_ID!, // Template for owner's email
-      emailDataForOwner,
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY!
-    ).then(() => {
-      // After owner email is sent, send email to user (auto-reply)
-      emailjs.send(
+
+    emailjs
+      .send(
         import.meta.env.VITE_EMAILJS_SERVICE_ID!,
-        import.meta.env.VITE_EMAILJS_USER_TEMPLATE_ID!, // Auto-reply template for user
-        emailDataForUser, // Data for the auto-reply email
+        import.meta.env.VITE_EMAILJS_OWNER_TEMPLATE_ID!,
+        emailData,
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY!
-      ).then(() => {
+      )
+      .then(() => {
+        return emailjs.send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID!,
+          import.meta.env.VITE_EMAILJS_USER_TEMPLATE_ID!,
+          emailData,
+          import.meta.env.VITE_EMAILJS_PUBLIC_KEY!
+        );
+      })
+      .then(() => {
         setSent(true);
         setFormData({ user_name: '', user_email: '', message: '' });
-      }).catch((error) => {
-        console.error('Error sending user email:', error);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error('Email sending failed:', error);
+        setError('Failed to send your message.');
+        setLoading(false);
       });
-    }).catch((error) => {
-      console.error('Error sending owner email:', error);
-    });
   };
-  
+
 
   return (
     <section id="contact" className="relative py-20 bg-gradient-to-b from-[#1e3a8a] to-[#0a1128]">
@@ -85,14 +67,14 @@ const PixelContact: React.FC = () => {
           <h2 className="text-4xl md:text-5xl font-bold mb-16 text-center bg-gradient-to-r from-blue-200 via-blue-100 to-blue-200 bg-clip-text text-transparent">
             Get in Touch
           </h2>
-          
+
           <div className="grid md:grid-cols-2 gap-12">
             <div className="space-y-6">
               <h3 className="text-2xl text-blue-200 mb-6">Let's Connect</h3>
               <p className="text-blue-100/80 text-lg leading-relaxed mb-8">
                 Have a project in mind or want to discuss opportunities? I'd love to hear from you.
               </p>
-              
+
               <div className="flex gap-4">
                 <a href="https://linkedin.com/in/devpatel55566" target="_blank" rel="noopener noreferrer" className="bg-gradient-to-br from-[#2b5876] to-[#4e4376] p-4 rounded-full hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-300">
                   <Linkedin className="w-6 h-6 text-blue-200" />
@@ -104,23 +86,8 @@ const PixelContact: React.FC = () => {
                   <Mail className="w-6 h-6 text-blue-200" />
                 </a>
               </div>
-
-              <div className="mt-8">
-                {user ? (
-                  <div className="text-blue-100">
-                    <p>Welcome, {user.displayName}</p>
-                    <button onClick={logout} className="mt-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 rounded-lg">
-                      Log Out
-                    </button>
-                  </div>
-                ) : (
-                  <button onClick={login} className="mt-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-2 px-6 rounded-lg">
-                    Login with Google
-                  </button>
-                )}
-              </div>
             </div>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <input
