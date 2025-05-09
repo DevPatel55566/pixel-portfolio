@@ -120,6 +120,49 @@
     @apply max-w-6xl mx-auto px-4 py-8;
   }
   
+  .terminal-z-index {
+    @apply relative z-30;
+  }
+
+  .project-modal-overlay {
+    z-index: 9999 !important;
+  }
+
+  #contact {
+    position: relative;
+    z-index: 10;
+  }
+  
+  /* Keep existing styles below */
+  .pixel-border {
+    @apply border border-pixel-accent relative;
+  }
+  
+  .button {
+    @apply bg-pixel-accent text-white px-4 py-2 transition-colors hover:bg-pixel-info;
+  }
+  
+  .card {
+    @apply bg-white p-4 border border-pixel-accent rounded-md shadow-md;
+  }
+  
+  .container {
+    @apply max-w-6xl mx-auto px-4 py-8;
+  }
+  
+  @keyframes fade-in {
+    from { opacity: 0 }
+    to { opacity: 1 }
+  }
+  
+  .fade-in {
+    animation: fade-in 0.3s ease-in-out;
+  }
+  
+  .hover-transition {
+    @apply transition-all duration-200;
+  }
+  
   /* Remove game-specific styles and keep only essential animations */
   @keyframes fade-in {
     from { opacity: 0 }
