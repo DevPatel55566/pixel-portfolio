@@ -8,10 +8,9 @@ const PixelNav: React.FC = () => {
     <nav className="bg-[#1e2b7a] text-white p-4 sticky top-0 z-50 border-b border-blue-400/20">
       <div className="container flex justify-between items-center">
         <div className="text-lg tracking-wider">
-          <span className="text-blue-400">&lt;</span>
-          Dev
-          <span className="text-blue-200">Patel</span>
-          <span className="text-blue-400">/&gt;</span>
+          {/* <span className="text-blue-400">&lt;</span> */}
+          Dev Patel
+          {/* <span className="text-blue-400">/&gt;</span> */}
         </div>
         
         <button 
