@@ -5,7 +5,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Badge } from '@/components/ui/badge';
 
-const PixelProjectsTerminal: React.FC = () => {
+const PixelProjectTerminal: React.FC = () => {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   
@@ -96,4 +96,4 @@ const PixelProjectsTerminal: React.FC = () => {
   );
 };
 
-export default PixelProjectsTerminal;
+export default PixelProjectTerminal;

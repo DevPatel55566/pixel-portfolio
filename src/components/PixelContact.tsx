@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Linkedin, Instagram } from 'lucide-react';
 import { useChatStore } from '@/Store/useChatStore';
-import emailjs from 'emailjs-com';
+import emailjs from '@emailjs/browser';
 
 const PixelContact: React.FC = () => {
   const { setUser: setStoreUser } = useChatStore();
