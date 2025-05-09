@@ -6,7 +6,7 @@ import PixelSkills from '@/components/PixelSkills';
 import PixelContact from '@/components/PixelContact';
 import PixelFooter from '@/components/PixelFooter';
 import ScanlineEffect from '@/components/ScanlineEffect';
-import PixelProjectTerminal from '@/components/PixelProjectTerminals';
+import PixelProjectTerminals from '@/components/PixelProjectTerminals';
 
 const Index: React.FC = () => {
   // Optional: Add pixel cursor effect
@@ -53,7 +53,7 @@ const Index: React.FC = () => {
       <section id="projects" className="relative py-20 bg-gradient-to-b from-[#1e3a8a] to-[#283593]">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-300/10 via-transparent to-transparent"></div>
         <div className="container mx-auto px-4 relative z-10">
-          <PixelProjectTerminal />
+          <PixelProjectTerminals />
         </div>
       </section>
 
