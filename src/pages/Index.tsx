@@ -7,7 +7,7 @@ import PixelContact from '@/components/PixelContact';
 import PixelFooter from '@/components/PixelFooter';
 import ScanlineEffect from '@/components/ScanlineEffect';
 import PixelProjectTerminals from '@/components/PixelProjectTerminals';
-
+import { Analytics } from "@vercel/analytics/react";
 const Index: React.FC = () => {
   // Optional: Add pixel cursor effect
   useEffect(() => {
@@ -43,7 +43,7 @@ const Index: React.FC = () => {
         className="fixed w-4 h-4 bg-pixel-accent z-50 pointer-events-none opacity-0 pixelated"
         style={{ transform: 'translate(-50%, -50%)' }}
       />
-
+      <Analytics />
       <PixelNav />
       <PixelHero />    {/* Hero section (uses unified gradient internally) */}
       <PixelAbout />   {/* About section (uses unified gradient internally) */}
