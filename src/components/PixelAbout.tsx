@@ -14,9 +14,9 @@ const PixelAbout: React.FC = () => {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="backdrop-blur-xl bg-white/5 p-8 rounded-2xl hover:translate-y-[-4px] transition-all duration-300 border border-white/10">
               <div className="text-3xl mb-4">🔧</div>
-              <h3 className="text-xl text-blue-200 mb-4">Software Developer</h3>
+              <h3 className="text-xl text-blue-200 mb-4">Java Developer</h3>
               <p className="text-blue-100/80">
-                Passionate about creating elegant solutions through clean, efficient code and modern technologies.
+                Passionate about crafting robust Java applications with clean architecture, efficient code, and modern frameworks like Spring Boot.
               </p>
             </div>
             
