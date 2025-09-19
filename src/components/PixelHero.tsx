@@ -9,7 +9,7 @@ const PixelHero: React.FC = () => {
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
-            Software Developer & <br />
+            Java Developer & <br />
             <span className="text-blue-400">Data Analyst</span>
           </h1>
           
